@@ -1,3 +1,7 @@
+# Load environment variables first
+from dotenv import load_dotenv
+load_dotenv()
+
 import uuid
 from datetime import datetime
 from pathlib import Path
@@ -91,7 +95,7 @@ Your analysis should be data-driven, nuanced, and avoid simplistic conclusions. 
 sentiment_agent = Agent(
     agent_name="Sentiment-Agent",
     system_prompt=SENTIMENT_PROMPT,
-    model_name="gpt-4o-mini",
+    model_name="gemini/gemini-2.0-flash-exp",
     output_type="str",
     max_loops=1,
     verbose=True,
@@ -161,7 +165,7 @@ class RiskManager:
         self.risk_agent = Agent(
             agent_name="Risk-Manager",
             system_prompt=RISK_PROMPT,
-            model_name="groq/deepseek-r1-distill-llama-70b",
+            model_name="gemini/gemini-2.0-flash-exp",
             output_type="str",
             max_loops=1,
             verbose=True,
@@ -212,7 +216,7 @@ class ExecutionAgent:
         self.execution_agent = Agent(
             agent_name="Execution-Agent",
             system_prompt=EXECUTION_PROMPT,
-            model_name="groq/deepseek-r1-distill-llama-70b",
+            model_name="gemini/gemini-2.0-flash-exp",
             output_type="str",
             max_loops=1,
             verbose=True,
@@ -264,7 +268,7 @@ class TradingDirector:
         self.director_agent = Agent(
             agent_name="Trading-Director",
             system_prompt=DIRECTOR_PROMPT,
-            model_name="groq/deepseek-r1-distill-llama-70b",
+            model_name="gemini/gemini-2.0-flash-exp",
             output_type="str",
             max_loops=1,
             verbose=True,
@@ -289,7 +293,7 @@ class TradingDirector:
             TradingThesis: Generated thesis
         """
         logger.info(f"Generating thesis for {stock}")
-
+        
         self.tickr = TickrAgent(
             stocks=[stock],
             max_loops=1,
@@ -370,7 +374,7 @@ class QuantAnalyst:
         self.quant_agent = Agent(
             agent_name="Quant-Analyst",
             system_prompt=QUANT_PROMPT,
-            model_name="groq/deepseek-r1-distill-llama-70b",
+            model_name="gemini/gemini-2.0-flash-exp",
             output_type="str",
             max_loops=1,
             verbose=True,
@@ -498,8 +502,8 @@ class AutoHedge:
                     task=task, stock=stock
                 )
 
-                self.conversation.add_message(
-                    role=self.director.agent_name,
+                self.conversation.add(
+                    role=self.director.director_agent.agent_name,
                     content=f"Stock: {stock}\nMarket Data: {market_data}\nThesis: {thesis}",
                 )
 
@@ -517,7 +521,7 @@ class AutoHedge:
                 # self.conversation.add(sentiment_agent.agent_name, setiment_analysis)
 
                 self.conversation.add(
-                    role=self.quant.agent_name, content=analysis
+                    role=self.quant.quant_agent.agent_name, content=analysis
                 )
 
                 # Assess risk
@@ -526,7 +530,7 @@ class AutoHedge:
                 )
 
                 self.conversation.add(
-                    role=self.risk.agent_name, content=risk_assessment
+                    role=self.risk.risk_agent.agent_name, content=risk_assessment
                 )
 
                 # # Generate order if approved
@@ -535,7 +539,7 @@ class AutoHedge:
                 )
 
                 self.conversation.add(
-                    role=self.execution.agent_name, content=order
+                    role=self.execution.execution_agent.agent_name, content=order
                 )
 
                 order = str(order)
@@ -546,7 +550,7 @@ class AutoHedge:
                 )
 
                 self.conversation.add(
-                    role=self.director.agent_name, content=decision
+                    role=self.director.director_agent.agent_name, content=decision
                 )
 
             #     log = AutoHedgeOutput(

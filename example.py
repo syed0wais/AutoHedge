@@ -1,21 +1,19 @@
+# Example usage
 from dotenv import load_dotenv
-from autohedge.main import AutoHedge
 
+# Load environment variables from .env file
 load_dotenv()
 
+from autohedge import AutoHedge
 
 # Define the stocks to analyze
-stocks = ["NVDA", "TSLA", "MSFT", "GOOG"]
+stocks = ["PLTR"]
 
 # Initialize the trading system with the specified stocks
-trading_system = AutoHedge(
-    name="swarms-fund",
-    description="Private Hedge Fund for Swarms Corp",
-    stocks=stocks,
-)
+trading_system = AutoHedge(stocks)
 
 # Define the task for the trading cycle
-task = "As BlackRock, let's evaluate AI companies for a portfolio with $500 million in allocation, aiming for a balanced risk-reward profile."
+task = "Let's analyze palantir to see if we should buy it, we have 50k$ in allocation"
 
 # Run the trading cycle and print the results
 print(trading_system.run(task=task))
